@@ -1,7 +1,7 @@
 # TestGCDDemo
 GCD是异步执行任务的技术支之一，开发者只需要将想要执行的block任务添加到适当的`Dispatch Queue`（调度队列）里，GCD就能生成必要的线程并计划地执行任务。由于GCD线程管理是作为系统的一部分实现的，因此可统一管理,这样就比以前的线程更有效率。下面的例子代码[在这里](https://github.com/zziazm/TestGCDDemo)。
 
-##Dispatch Queue
+## Dispatch Queue
 `Dispatch Queue` 是执行任务的等待队列，添加到`Dispatch Queue`的任务按照FIFO（先进先出）执行处理。GCD里存在两中`Dispatch Queue`：
 - `Serial Dispatch Queue`: 串行队列。使用一个线程串行执行添加到其中的任务。
 - ` Concurrent Dispatch Queue`: 并行队列。使用多个线程并行执行添加到其中的任务。
@@ -72,7 +72,7 @@ dispatch_queue_t serialQueue = dispatch_queue_create("com.example.gcd.serialQueu
 ```
 nslog不会被执行。
 
-##Dispatch Group
+## Dispatch Group
 经常会碰到这种情况，想要在加入到Dispatch Queue中的多个block任务都执行完后取执行其他任务，如果使用的是串行队列，只要将所有的block任务加入到串行队列并在最后追加其他任务即可；如果使用的是并行队列或者有多个DIspatch Queue时，可以使用Dispatch Group。
 ```
   dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -123,7 +123,7 @@ dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAU
     }
 ```
 
-##Dispatch_barrier_async
+## Dispatch_barrier_async
 在访问数据库或文件时，如果多个读取处理并行操作是不会有问题的，但是写入处理不可以与其他的写入处理以及包含读取处理的其他处理并行执行。也就是说，为了高效访问，读取处理追加到Concurrent Dispatch Queue中，写入处理在任意一个读取处理没有执行的状态下，追加到Serial Dispatch Queue中即可（在写入处理没有执行之前，读取处理不可执行）。
 
 ```
@@ -167,7 +167,7 @@ dispatch_queue_t queue = dispatch_queue_create("com.example.gcd.ForBarrier", DIS
 
 
 
-##dispath_after
+## dispath_after
 想要在指定时间后将block添加到队列里，可以使用dispatch_after函数来实现。
 ```
     dispatch_time_t time = dispatch_time( DISPATCH_TIME_NOW, 3*NSEC_PER_SEC);
@@ -201,7 +201,7 @@ dispatch_time_t getDispatchTimeByDate(NSDate * date){
 
 
 
-##dispatch_apply
+## dispatch_apply
 `    dispatch_apply(<#size_t iterations#>, dispatch_queue_t  _Nonnull queue, <#^(size_t)block#>)
 `函数是`dispatch_sycn`和`Dispatch Group`的关联API。该函数按指定的次数将指定的block追加到指定的Dispatch Group中，并等待所有的block执行完后函数返回。第一个参数是迭代的次数，第二个参数是指定的queue，第三个参数是指定的block，block里有一个size_t类型的参数，用来区分各个block使用。
 ```
@@ -272,7 +272,7 @@ dispatch_apply([array count], dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_
  });
 ```
 
-##Dispatch Semaphore
+## Dispatch Semaphore
 ```
 dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     NSMutableArray * array =  @[].mutableCopy;
@@ -314,7 +314,7 @@ dispatch_semaphore_wait函数返回为0时，可安全地执行需要进行排�
 
 ```
 
-###使用信号量实现URLSession同步
+### 使用信号量实现URLSession同步
 NSUrlSession的方法全是异步的，要想实现同步的，也可以使用信号量来实现。
 ```
 NSURLSession * session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
@@ -338,7 +338,7 @@ dispatch_suspend函数挂起指定的Dispatch Queue。
 dispatch_resume函数恢复指定的Dispatch Queue。
  `dispatch_resume (queue);`
 这些函数对已经执行的处理没有影响，挂起后，追加到Dispatch Queue中但还没有执行的处理在暂停执行，而恢复则会使这些处理能够继续执行。
-###dispatch_once
+### dispatch_once
 dispatch_once函数是保证在应用程序中只执行一次指定处理的API。
 ```
 + (CustomModel *)shareInstance{
